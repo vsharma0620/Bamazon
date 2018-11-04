@@ -18,40 +18,40 @@ var connection = mysql.createConnection({
 
 // connect to the mysql server and sql database
 connection.connect(function(err) {
-  if (err) throw err;
+  if (err) {
+    console.log(err.stack);
+  }
   // run the start function after the connection is made to print all items
   start();
 });
 
 function start() {
-    console.log("Selecting all products...\n");
     connection.query("SELECT * FROM products", function(err, res) {
       if (err) throw err;
       // Log all results of the SELECT statement
-      console.table(res);
-
-      promtCustomerForItem(res);
+      console.log(res);
+      promptCustomerForItem(res);
     });
   }
 
-  function promtCustomerForItem (inventory) {
+  function promptCustomerForItem (inventory) {
   
   inquirer 
     .prompt([
       {
-      name: "productID",
       type: "input",
+      name: "choice",
       message: "Which product would you like to buy? [Quit with Q]",
+        // choices: ["Scarf", "Cardigan", "Dress", "Shirt", "Necklace,", "Earrings", "Rings", "Nail_Polish", "Nail_Polish_Remover", "Perfume"
       validate: function(val) {
         return !isNaN(val) || val.toLowerCase() === "q"; 
       }
       }
     ])
-      // choices: ["Scarf", "Cardigan", "Dress", "Shirt", "Necklace,", "Earrings", "Rings", "Nail_Polish", "Nail_Polish_Remover", "Perfume"
     .then(function(val) {
-      exit(val.productID);
+      exit(val.choice);
       var choiceID =
-      parseInt(val.productID);
+      parseInt(val.choice);
       var product =
       checkInventory(choiceID, inventory);
 
